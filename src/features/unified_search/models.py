@@ -22,3 +22,10 @@ class SearchResult:
             'last_modified': self.last_modified,
             'size': self.size
         }
+    
+@dataclass
+class IndexStats:
+    total_files: int
+    total_size: int
+    last_indexed: float
+    directories: list
