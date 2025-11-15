@@ -62,3 +62,29 @@ class FileIndexer:
         conn.commit()
         conn.close()
         return count
+    
+    def get_index_stats(self) -> IndexStats:
+        """Get statistics about the index"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.execute('''
+            SELECT COUNT(*), COALESCE(SUM(size), 0), MAX(indexed_at)
+            FROM files
+        ''')
+        total_files, total_size, last_indexed = cursor.fetchone()
+
+        cursor = conn.execute('SELECT DISTINCT path FROM files LIMIT 1000')
+        sample_files = [row[0] for row in cursor.fetchall()]
+
+        # Extract unique directories from sample files
+        directories = set()
+        for file_path in sample_files:
+            directories.add(str(Path(file_path).parent))
+
+        conn.close()
+
+        return IndexStats(
+            total_files=total_files,
+            total_size=total_size,
+            last_indexed=last_indexed or 0,
+            directories=list(directories)
+        )
