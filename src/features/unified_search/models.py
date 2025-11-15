@@ -11,4 +11,14 @@ class SearchResult:
     extension: Optional[str] = None
     last_modified: Optional[float] = None
     size: Optional[int] = None
-    
+
+    def to_dict(self):
+        return {
+            'path': self.path,
+            'name': self.name,
+            'score': self.score,
+            'type': self.type,
+            'extension': self.extension,
+            'last_modified': self.last_modified,
+            'size': self.size
+        }
