@@ -88,3 +88,10 @@ class FileIndexer:
             last_indexed=last_indexed or 0,
             directories=list(directories)
         )
+
+    def clear_index(self):
+        """Clear the entire search index"""
+        conn = sqlite3.connect(self.db_path)
+        conn.execute('DELETE FROM files')
+        conn.commit()
+        conn.close()
