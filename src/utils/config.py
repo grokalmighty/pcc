@@ -48,3 +48,11 @@ class ConfigManager:
         for k in keys:
             value = value.get(k, {})
         return value if value != {} else default
+    
+    def set(self, key: str, value: Any):
+        keys = key.split('.')
+        config = self._config
+        for k in keys[:-1]:
+            config = config.setdefault(k, {})
+        config[keys[-1]] = value
+        self.save_config()
