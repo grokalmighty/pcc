@@ -28,3 +28,37 @@ class FileIndexer:
         conn.execute('CREATE INDEX IF NOT EXISTS idx_extension ON files(extension)')
         conn.commit()
         conn.close()
+
+    def index_directory(self, directory: str) -> int:
+        """Index a directory and return number of files indexed"""
+        dir_path = Path(directory).expanduser()
+        if not dir_path.exists():
+            return 0
+
+        conn = sqlite3.connect(self.db_path)
+        count = 0
+
+        for file_path in dir_path.rglob('*'):
+            if file_path.is_file():
+                try:
+                    stat = file_path.stat()
+                    conn.execute('''
+                        INSERT OR REPLACE INTO files
+                        (path, name, extension, size, last_modified, indexed_at)
+                        VALUES(?, ?, ?, ?, ?, ?)
+                    ''', (
+                        str(file_path),
+                        file_path.name,
+                        file_path.suffix.lower(),
+                        stat.st_size,
+                        stat.st_mtime,
+                        time.time()
+                    ))
+                    count += 1
+                except (OSError, PermissionError) as e:
+                    # Skip files that can't be accessed
+                    continue
+            
+        conn.commit()
+        conn.close()
+        return count
