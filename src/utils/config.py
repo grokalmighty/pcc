@@ -14,3 +14,26 @@ class ConfigManager:
             with open(self.config_path, 'r') as f:
                 return json.load(f)
         return self._get_default_config()
+
+    def _get_default_config(self) -> Dict[str, Any]:
+        return {
+            "hotkey": "ctrl+space",
+            "search_directories": ["~/Documents", "~/Downloads"],
+            "clipboard_history_size": 50,
+            "file_organizer": {
+                "watch_directory": "~/Downloads",
+                "rules": {
+                    "Documents": [".pdf", ".docx", ".txt", ".md"],
+                    "Images": [".png", ".jpg", ".jpeg", ".gif"],
+                    "Videos": [".mp4", ".mov", ".avi"],
+                    "Music": [".mp3", ".wav", ".flac"]
+                }
+            },
+            "workspaces": {
+                "dev": {
+                    "apps": ["code", "chrome"],
+                    "urls": ["https://github.com", "https://stackoverflow.com"],
+                    "files": ["~/projects/notes.txt"]
+                }
+            }
+        }
