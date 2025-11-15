@@ -41,3 +41,10 @@ class ConfigManager:
     def save_config(self):
         with open(self.config_path, 'w') as f:
             json.dump(self._config, f, indent=2)
+    
+    def get(self, key: str, default=None):
+        keys = key.split('.')
+        value = self._config
+        for k in keys:
+            value = value.get(k, {})
+        return value if value != {} else default
