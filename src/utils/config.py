@@ -37,3 +37,8 @@ class ConfigManager:
                 }
             }
         }
+    
+    def save_config(self)
+        with open(self.config_path, 'w') as f:
+            json.dump(self._config, f, indent=2)
+            
